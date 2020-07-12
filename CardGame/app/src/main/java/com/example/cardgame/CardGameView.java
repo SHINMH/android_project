@@ -30,6 +30,8 @@ public class CardGameView extends View {
 
     CardGameThread m_Thread;
 
+    int m_PairCount;
+
     private int m_State;
 
     public static final int STATE_READY = 0;
@@ -44,7 +46,6 @@ public class CardGameView extends View {
         int _ScreenHeight = _Metrics.heightPixels;
         int _ScreenWidth = _Metrics.widthPixels;
 
-
         //배경 이미지
         m_BackGroundImage = BitmapFactory.decodeResource(getResources(), R.drawable.background, null);
         m_BackGroundImage = resizeBitmap(m_BackGroundImage, _ScreenWidth, _ScreenHeight);
@@ -57,10 +58,10 @@ public class CardGameView extends View {
 
         //화면에 표시할 카드 할당
         m_Shuffle = new Card[3][2];
-
+        //카드 match를 검사하는 thread 생성, run
         m_Thread = new CardGameThread(this);
-
         m_Thread.start();
+
         setCardShuffle();
     }
 
@@ -163,7 +164,7 @@ public class CardGameView extends View {
                                 m_FirstSelectCard = m_Shuffle[i][j];
                                 m_FirstSelectCard.m_State = Card.CARD_PLAYEROPEN;
                             }else{
-                                if(m_FirstSelectCard != m_Shuffle[i][j] && m_Shuffle[i][j].m_State == Card.CARD_CLOSE){
+                                if(m_FirstSelectCard != m_Shuffle[i][j] && m_SecondSelectCard == null &&m_Shuffle[i][j].m_State == Card.CARD_CLOSE){
                                     m_SecondSelectCard = m_Shuffle[i][j];
                                     m_SecondSelectCard.m_State = Card.CARD_PLAYEROPEN;
                                 }
@@ -172,7 +173,19 @@ public class CardGameView extends View {
                     }
                 }
             }
+
+            if(m_PairCount == 0){
+                m_State = STATE_END;
+            }
         }else if(m_State == STATE_END){
+            endGame();
+            m_Shuffle [0][0]. m_State = Card. CARD_SHOW;
+            m_Shuffle [0][1]. m_State = Card. CARD_SHOW;
+            m_Shuffle [1][0]. m_State = Card. CARD_SHOW;
+            m_Shuffle [1][1]. m_State = Card. CARD_SHOW;
+            m_Shuffle [2][0]. m_State = Card. CARD_SHOW;
+            m_Shuffle [2][1]. m_State = Card. CARD_SHOW;
+
             m_State = STATE_READY;
         }
 
@@ -190,6 +203,13 @@ public class CardGameView extends View {
 
         m_FirstSelectCard = null;
         m_SecondSelectCard = null;
+
+        m_PairCount = 3;
+    }
+
+    public void endGame(){
+        //재시작을 위한 카드 셔플
+        setCardShuffle();
     }
 
     public void checkMatch(){
@@ -202,6 +222,7 @@ public class CardGameView extends View {
             // 두 카드의 색상이 같으면 두 카드를 맞춘 상태로 바꿉니다.
             m_FirstSelectCard.m_State = Card. CARD_MATCHED;
             m_SecondSelectCard.m_State = Card. CARD_MATCHED;
+            m_PairCount -= 1;
         }else {
             try {
                 Thread.sleep(500);
