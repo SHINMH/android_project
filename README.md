@@ -1,2 +1,7 @@
-# android_project
-android를 이용한 프로젝트
+# 2020년 여름계절학기 모바일응용설계 android_project
+
+2020년 여름계절학기 모바일응용설계에서 진행한 프로젝트
+
+***
+1. Card match game
+  6개의 카드 3종류의 카드의 짝을 맞추는 게임
