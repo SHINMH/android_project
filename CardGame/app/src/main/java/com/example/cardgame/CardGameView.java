@@ -163,8 +163,10 @@ public class CardGameView extends View {
                                 m_FirstSelectCard = m_Shuffle[i][j];
                                 m_FirstSelectCard.m_State = Card.CARD_PLAYEROPEN;
                             }else{
-                                m_SecondSelectCard = m_Shuffle[i][j];
-                                m_SecondSelectCard.m_State = Card.CARD_PLAYEROPEN;
+                                if(m_FirstSelectCard != m_Shuffle[i][j] && m_Shuffle[i][j].m_State == Card.CARD_CLOSE){
+                                    m_SecondSelectCard = m_Shuffle[i][j];
+                                    m_SecondSelectCard.m_State = Card.CARD_PLAYEROPEN;
+                                }
                             }
                         }
                     }
